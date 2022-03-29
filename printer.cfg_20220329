@@ -1,0 +1,313 @@
+# This file contains common pin mappings for the 2017 Creality
+# CR-10. To use this config, the firmware should be compiled for the
+# AVR atmega1284p.
+
+# Note, a number of Melzi boards are shipped without a bootloader. In
+# that case, an external programmer will be needed to flash a
+# bootloader to the board (for example, see
+# http://www.instructables.com/id/Flashing-a-Bootloader-to-the-CR-10/
+# ). Once that is done, one should be able to use the standard "make
+# flash" command to flash Klipper.
+
+# See the example.cfg file for a description of available parameters.
+
+
+
+[stepper_x]
+step_pin: PB13
+dir_pin: !PB12
+enable_pin: !PB14
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PC0
+position_endstop: 0
+position_max: 300
+homing_speed: 50
+#step_distance: .01249687
+rotation_distance: 39.989984
+
+[tmc2209 stepper_x]
+uart_pin: PC11
+tx_pin: PC10
+uart_address: 0
+run_current: 0.80
+#hold_current: 0.500
+stealthchop_threshold: 999999
+
+[stepper_y]
+step_pin: PB10
+dir_pin: !PB2
+enable_pin: !PB11
+microsteps: 16
+rotation_distance: 40
+endstop_pin: ^PC1
+position_endstop: 0
+position_max: 300
+homing_speed: 50
+#step_distance: .01247038
+rotation_distance: 39.905216
+
+[tmc2209 stepper_y]
+uart_pin: PC11
+tx_pin: PC10
+uart_address: 2
+run_current: 0.800
+#hold_current: 0.500
+stealthchop_threshold: 999999
+
+[stepper_z]
+step_pin: PB0
+dir_pin: PC5
+enable_pin: !PB1
+microsteps: 16
+#rotation_distance: 8
+rotation_distance: 7.960192
+endstop_pin: probe:z_virtual_endstop
+position_max: 400
+position_min: -1
+#step_distance: .00248756
+
+[tmc2209 stepper_z]
+uart_pin: PC11
+tx_pin: PC10
+uart_address: 1
+run_current: 0.80
+#hold_current: 0.500
+stealthchop_threshold: 999999
+
+[extruder]
+step_pin: PB3
+dir_pin: !PB4
+enable_pin: !PD2
+microsteps: 16
+rotation_distance: 7.37312
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+heater_pin: PC8
+pressure_advance: 0.074
+#sensor_type: EPCOS 100K B57560G104F
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: PA0
+#control: pid
+#pid_Kp: 21.527
+#pid_Ki: 1.063
+#pid_Kd: 108.982
+min_temp: 0
+max_temp: 250
+
+[tmc2209 extruder]
+uart_pin: PC11
+tx_pin: PC10
+uart_address: 3
+run_current: 0.850
+stealthchop_threshold: 999999
+
+[heater_bed]
+heater_pin: PD4
+sensor_type: EPCOS 100K B57560G104F
+sensor_pin: PA6
+#control: pid
+#pid_Kp: 426.68
+#pid_Ki: 78.92
+#pid_Kd: 576.71
+min_temp: 0
+max_temp: 130
+
+[heater_bed]
+heater_pin: PC9
+sensor_type: ATC Semitec 104GT-2
+sensor_pin: PC3
+#control: pid
+#pid_Kp: 54.027
+#pid_Ki: 0.770
+#pid_Kd: 948.182
+min_temp: 0
+max_temp: 130
+
+#[heater_fan nozzle_cooling_fan];
+#pin: PC6
+[fan]
+pin: PC6
+
+[fan_generic fan1]
+pin: PC7
+
+[mcu]
+serial: /dev/serial/by-id/usb-Klipper_stm32f103xe_39FFD8054255373725811757-if00
+baud: 250000
+
+[printer]
+kinematics: cartesian
+max_velocity: 300
+max_accel: 10000
+max_accel_to_decel: 10000
+max_z_velocity: 5
+max_z_accel: 100
+
+[display]
+lcd_type: st7920
+cs_pin: EXP1_7
+sclk_pin: EXP1_6
+sid_pin: EXP1_8
+encoder_pins: ^EXP1_5, ^EXP1_3
+click_pin: ^!EXP1_2
+
+[bltouch]
+#Bltouch attached as z-stop and the ender3 standard config lists the z-stop pin as ^PC2
+sensor_pin: ^PC14
+control_pin: PA1
+#x_offset: 31
+#y_offset: 22
+#z_offset: 1.42
+x_offset: 42
+y_offset: 0
+z_offset: 1.57
+pin_move_time: 0.500
+pin_up_reports_not_triggered: True
+pin_up_touch_mode_reports_triggered: False
+
+[bed_mesh]
+speed: 120
+horizontal_move_z: 5
+mesh_min: 45,45
+mesh_max: 255,255
+probe_count: 3,3
+#algorithm: bicubic
+
+
+[safe_z_home]
+home_xy_position: 150,150 # Change coordinates to the center of your print bed
+speed: 50
+z_hop: 10                 # Move up 10mm
+z_hop_speed: 5
+
+
+[gcode_macro g29]
+gcode:
+    set_fan_speed fan=fan1 speed=0.5
+    BED_MESH_CALIBRATE
+    BED_MESH_OUTPUT
+
+[board_pins]
+aliases:
+    # EXP1 header
+    EXP1_1=PB5, EXP1_3=PA9,   EXP1_5=PA10, EXP1_7=PB8, EXP1_9=<GND>,
+    EXP1_2=PA15, EXP1_4=<RST>, EXP1_6=PB9,  EXP1_8=PB15, EXP1_10=<5V>
+
+[screws_tilt_adjust]
+screw1: 20,20
+screw1_name: front left screw
+screw2: 255,20
+screw2_name: front right screw
+screw3: 255,275
+screw3_name: rear right screw
+screw4: 20,275
+screw4_name: rear left screw
+horizontal_move_z: 10.
+speed: 50.
+screw_thread: CW-M3
+
+[filament_switch_sensor my_sensor]
+pause_on_runout: True
+#   When set to True, a PAUSE will execute immediately after a runout
+#   is detected. Note that if pause_on_runout is False and the
+#   runout_gcode is omitted then runout detection is disabled. Default
+#   is True.
+runout_gcode: PAUSE
+insert_gcode: RESUME
+#   A list of G-Code commands to execute after a filament insert is
+#   detected. See docs/Command_Templates.md for G-Code format. The
+#   default is not to run any G-Code commands, which disables insert
+#   detection.
+#event_delay: 3.0
+#   The minimum amount of time in seconds to delay between events.
+#   Events triggered during this time period will be silently
+#   ignored. The default is 3 seconds.
+#pause_delay: 0.5
+#   The amount of time to delay, in seconds, between the pause command
+#   dispatch and execution of the runout_gcode. It may be useful to
+#   increase this delay if OctoPrint exhibits strange pause behavior.
+#   Default is 0.5 seconds.
+switch_pin: ^!PC15
+#   The pin on which the switch is connected. This parameter must be
+#   provided.
+
+[pause_resume]
+
+[gcode_macro PAUSE]
+rename_existing: BASE_PAUSE
+gcode:
+    {% set X = params.X|default(50)|float %}
+    {% set Y = params.Y|default(0)|float %}
+    {% set Z = params.Z|default(10)|float %}
+    {% set E = params.E|default(1)|float %}
+    SAVE_GCODE_STATE NAME=PAUSE_state
+    BASE_PAUSE
+    G91
+    G1 E-{E} F2100
+    G1 Z{Z}
+    G90
+    G1 X{X} Y{Y} F6000
+
+[gcode_macro RESUME]
+rename_existing: BASE_RESUME
+gcode:
+    {% set E = params.E|default(1)|float %}
+    G91
+    G1 E{E} F2100
+    G90
+    RESTORE_GCODE_STATE NAME=PAUSE_state MOVE=1
+    BASE_RESUME
+[gcode_macro LOAD_FILAMENT]
+gcode:
+        M117 Loading Filament...
+        M83
+        G1 E60 F1000
+        G1 E100 F250
+        G92 E0.0
+        M400
+        M117 Load Complete
+
+[gcode_macro LOAD_FILAMENT_SLOW]
+gcode:
+        M117 Loading Filament...
+        M83
+        # Break up to avoid extrude-too-long and timeouts due to how long it takes to extrude
+        G1 E50 F250
+        G1 E50 F250
+        G1 E30 F100
+        G1 E30 F100
+        G92 E0.0
+        M400
+        M117 Load Complete
+
+
+[gcode_macro UNLOAD_FILAMENT]
+gcode:
+        M117 Unloading Filament...
+        M83
+        G1 E0.5 F1000
+        G1 E-0.5 F1000
+        G1 E1.0 F1000
+        G1 E-1.0 F1000
+        G1 E1.5 F1000
+        G1 E-1.5 F1000
+        G1 E2.0 F1000
+        G1 E-120 F1000
+        M117 Remove Filament Now!
+        M400
+
+#*# <---------------------- SAVE_CONFIG ---------------------->
+#*# DO NOT EDIT THIS BLOCK OR BELOW. The contents are auto-generated.
+#*#
+#*# [extruder]
+#*# control = pid
+#*# pid_kp = 22.284
+#*# pid_ki = 1.152
+#*# pid_kd = 107.801
+#*#
+#*# [heater_bed]
+#*# control = pid
+#*# pid_kp = 66.285
+#*# pid_ki = 0.973
+#*# pid_kd = 1128.510
